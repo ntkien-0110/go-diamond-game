@@ -14,7 +14,9 @@
   const finalTitle = document.getElementById('finalTitle');
   const totalScore = document.getElementById('totalScore');
   const leaderboardBox = document.getElementById('leaderboard');
+  const saveStatus = document.getElementById('saveStatus');
   const shareLink = document.getElementById('shareLink');
+  const viewLeaderboardBtn = document.getElementById('viewLeaderboard');
   const registerMsg = document.getElementById('registerMsg');
   const celebrate = document.getElementById('celebrate');
   const fwCanvas = document.getElementById('fwCanvas');
@@ -307,11 +309,36 @@
       completedAt: Date.now()
     };
     if (window.API_URL) {
+      const form = new URLSearchParams();
+      form.append('action', 'submit');
+      form.append('name', payload.name);
+      form.append('team', payload.team);
+      form.append('score', String(payload.score));
+      form.append('completedAt', String(payload.completedAt));
       return fetch(window.API_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      }).catch(() => fallbackSubmit(payload));
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: form.toString()
+      }).then(async r => {
+        let data = null; try { data = await r.json(); } catch(e){}
+        if (data && data.ok) {
+          if (saveStatus) saveStatus.textContent = 'Đã lưu điểm lên bảng xếp hạng.';
+        } else if (data && data.reason === 'duplicate') {
+          if (saveStatus) saveStatus.textContent = 'Tên/Tổ này đã tham gia trước đó, không ghi điểm lần nữa.';
+        } else {
+          if (saveStatus) saveStatus.textContent = 'Không thể lưu điểm lên bảng xếp hạng. Thử lại sau.';
+          await fallbackSubmit(payload);
+        }
+      }).catch(async () => {
+        // Fallback: thử JSON không-cors (đọc response không khả dụng nhưng vẫn gửi)
+        try {
+          await fetch(window.API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
+          if (saveStatus) saveStatus.textContent = 'Đã gửi điểm (no-cors). Kiểm tra Sheet sau ít phút.';
+        } catch(e) {
+          if (saveStatus) saveStatus.textContent = 'Mạng lỗi, lưu tạm cục bộ.';
+          await fallbackSubmit(payload);
+        }
+      });
     }
     return fallbackSubmit(payload);
   }
@@ -448,6 +475,18 @@
       renderQuestion();
     }
   });
+
+  if (viewLeaderboardBtn) {
+    viewLeaderboardBtn.addEventListener('click', async () => {
+      register.classList.add('hidden');
+      game.classList.add('hidden');
+      final.classList.remove('hidden');
+      finalTitle.textContent = 'Bảng xếp hạng';
+      totalScore.textContent = '';
+      saveStatus && (saveStatus.textContent = '');
+      await loadLeaderboard();
+    });
+  }
 
   
 })();

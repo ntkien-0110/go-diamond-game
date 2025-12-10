@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bảng xếp hạng - Go Diamond Game</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="container">
+    <section>
+      <h1>Bảng xếp hạng</h1>
+      <div id="leaderboard" class="leaderboard"></div>
+    </section>
+  </div>
+  <script>
+    (function(){
+      let api = '';
+      try { api = localStorage.getItem('gdg_api_url') || ''; } catch(e){}
+      const q = new URLSearchParams(location.search).get('api');
+      if (q) { api = q; try { localStorage.setItem('gdg_api_url', api); } catch(e){} }
+      if (!api) api = 'https://script.google.com/macros/s/AKfycbySegXCEv0yAM8eKbogffi8gtM4FZ57msAGeZjd-uxAipDDDBk5sPHbcPK8BvimX1g/exec';
+      window.API_URL = api;
+    })();
+    const box = document.getElementById('leaderboard');
+    function render(rows){
+      const table = document.createElement('table'); table.className = 'board';
+      const thead = document.createElement('thead'); const hrow = document.createElement('tr');
+      ['Hạng','#','Họ tên','Tổ','Điểm','Thời gian'].forEach(t => { const th = document.createElement('th'); th.textContent = t; hrow.appendChild(th); });
+      thead.appendChild(hrow);
+      const tbody = document.createElement('tbody');
+      const rankIcon = ['🥇','🥈','🥉'];
+      rows.forEach((r,i)=>{
+        const tr = document.createElement('tr'); const time = new Date(r.completedAt).toLocaleString();
+        [rankIcon[i]||'—', i+1, r.name, r.team, r.score, time].forEach(val=>{ const td=document.createElement('td'); td.textContent=val; tr.appendChild(td); });
+        tbody.appendChild(tr);
+      });
+      table.appendChild(thead); table.appendChild(tbody);
+      box.innerHTML=''; box.appendChild(table);
+    }
+    function fallback(){
+      const key='gdg_scores'; const data=JSON.parse(localStorage.getItem(key)||'[]');
+      const rows=data.sort((a,b)=>(b.score-a.score)||(a.completedAt-b.completedAt)); render(rows);
+    }
+    async function load(){
+      if (window.API_URL) {
+        try {
+          const res = await fetch(window.API_URL + '?action=leaderboard');
+          const rows = await res.json(); render(rows);
+        } catch(e){ fallback(); }
+      } else { fallback(); }
+    }
+    load();
+  </script>
+</body>
+</html>

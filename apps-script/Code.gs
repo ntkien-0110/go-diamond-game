@@ -6,7 +6,16 @@ function doGet(e) {
 }
 
 function doPost(e) {
-  var data = e && e.postData && e.postData.contents ? JSON.parse(e.postData.contents) : null;
+  var data = null;
+  try {
+    data = e && e.postData && e.postData.contents ? JSON.parse(e.postData.contents) : null;
+  } catch(err) {}
+  if (!data) {
+    var p = e && e.parameter ? e.parameter : {};
+    if (p && p.action === 'submit') {
+      data = { action: p.action, name: p.name, team: p.team, score: Number(p.score||0), completedAt: Number(p.completedAt||Date.now()) };
+    }
+  }
   if (data && data.action === 'submit') {
     var ss = SpreadsheetApp.getActive();
     var sh = ss.getSheetByName('Scores');

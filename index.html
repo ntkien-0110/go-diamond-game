@@ -21,6 +21,7 @@
       </div>
       <div style="display:flex;gap:12px;align-items:center;">
         <button id="startBtn" type="button">Bắt đầu</button>
+        <button id="viewLeaderboard" type="button">Xem bảng xếp hạng</button>
       </div>
       <div id="registerMsg" class="msg"></div>
     </section>
@@ -47,6 +48,7 @@
     <section id="final" class="hidden">
       <h2 id="finalTitle"></h2>
       <div class="total">Tổng điểm: <strong id="totalScore">0</strong></div>
+      <div id="saveStatus" class="msg"></div>
       <div id="leaderboard" class="leaderboard"></div>
       <a id="shareLink" target="_blank">Chia sẻ</a>
     </section>
@@ -54,7 +56,10 @@
 
   <div id="celebrate" class="celebrate hidden"><canvas id="fwCanvas"></canvas></div>
 
-  <script>window.API_URL = 'https://script.google.com/macros/s/AKfycbySegXCEv0yAM8eKbogffi8gtM4FZ57msAGeZjd-uxAipDDDBk5sPHbcPK8BvimX1g/exec';</script>
+  <script>
+    window.API_URL = 'https://script.google.com/macros/s/AKfycbySegXCEv0yAM8eKbogffi8gtM4FZ57msAGeZjd-uxAipDDDBk5sPHbcPK8BvimX1g/exec';
+    try { localStorage.setItem('gdg_api_url', window.API_URL); } catch(e) {}
+  </script>
   <script src="script.js" defer></script>
 </body>
 </html>
