@@ -1,0 +1,10 @@
+levelId,question,optionA,optionB,optionC,optionD,correctOption
+3,Chọn đáp án đúng để qua mốc 3%,Đáp án A,Đáp án B,Đáp án C,Đáp án D,A
+6,Giải mã đáp án chính xác mốc 6%,Đáp án A,Đáp án B,Đáp án C,Đáp án D,A
+12,Chọn phương án chuẩn xác mốc 12%,Đáp án A,Đáp án B,Đáp án C,Đáp án D,A
+15,Đưa ra lựa chọn đúng mốc 15%,Đáp án A,Đáp án B,Đáp án C,Đáp án D,A
+silver,Kiểm chứng kiến thức ở mốc Silver,Đáp án A,Đáp án B,Đáp án C,Đáp án D,A
+gold,Tiếp tục thể hiện phong độ mốc Gold,Đáp án A,Đáp án B,Đáp án C,Đáp án D,A
+platinum,Mốc khó, chọn thật chuẩn mốc Platinum,Đáp án A,Đáp án B,Đáp án C,Đáp án D,A
+emerald,Cận đích, chọn đáp án đúng mốc Emerald,Đáp án A,Đáp án B,Đáp án C,Đáp án D,A
+diamond,Cú chốt hạ để thành Diamond,Đáp án A,Đáp án B,Đáp án C,Đáp án D,A
